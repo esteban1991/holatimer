@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  HolaTimer — Heart Hourglass icon concept
+  Figma-compatible (no SVG filters)
+  Open in Figma: File → Import → pick this file
+  Export: select the 1024x1024 frame → Export → PNG @1x → save as icon.png
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F06292"/>
+      <stop offset="100%" stop-color="#AD1457"/>
+    </linearGradient>
+
+    <!--
+      Heart path (re-used for both the dark outline and white fill).
+      Shape: symmetric heart, center ~(512,490)
+      X: 292 → 732   Y: 238 → 752
+    -->
+
+    <!-- Clip mask = exact heart shape, used to clip the inner hourglass -->
+    <clipPath id="heartClip">
+      <path d="M512,332
+               C512,288 468,236 406,248
+               C334,262 292,334 292,394
+               C292,514 412,604 512,752
+               C612,604 732,514 732,394
+               C732,334 690,262 618,248
+               C556,236 512,288 512,332Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- ① Rounded square background -->
+  <rect width="1024" height="1024" rx="210" fill="url(#bg)"/>
+
+  <!-- ② Dark heart — slightly larger → creates the thick outline (like the bee border) -->
+  <path transform="translate(512,490) scale(1.09) translate(-512,-490)"
+        d="M512,332
+           C512,288 468,236 406,248
+           C334,262 292,334 292,394
+           C292,514 412,604 512,752
+           C612,604 732,514 732,394
+           C732,334 690,262 618,248
+           C556,236 512,288 512,332Z"
+        fill="#3D0B26"/>
+
+  <!-- ③ White heart (normal size) -->
+  <path d="M512,332
+           C512,288 468,236 406,248
+           C334,262 292,334 292,394
+           C292,514 412,604 512,752
+           C612,604 732,514 732,394
+           C732,334 690,262 618,248
+           C556,236 512,288 512,332Z"
+        fill="white"/>
+
+  <!-- ④ Hourglass pyramids — clipped to the heart so they never bleed out -->
+  <g clip-path="url(#heartClip)">
+    <!-- Upper half: wide at top, narrows to waist point -->
+    <polygon points="200,328 824,328 512,528" fill="#F8BBD9"/>
+    <!-- Lower half: narrow at waist, opens to the heart bottom -->
+    <polygon points="200,790 824,790 512,540" fill="#F8BBD9"/>
+    <!-- Tiny white stripe at waist to show the "pinch" -->
+    <rect x="430" y="522" width="164" height="26" fill="white"/>
+  </g>
+
+  <!-- ⑤ Waist bar (the hourglass neck) -->
+  <rect x="446" y="524" width="120" height="22" rx="11" fill="#E91E8C"/>
+
+  <!-- ⑥ Sand dots falling through -->
+  <circle cx="512" cy="558" r="10" fill="#E91E8C"/>
+  <circle cx="496" cy="576" r="8"  fill="#E91E8C" opacity="0.75"/>
+  <circle cx="528" cy="576" r="8"  fill="#E91E8C" opacity="0.75"/>
+  <circle cx="512" cy="593" r="6"  fill="#E91E8C" opacity="0.50"/>
+  <circle cx="500" cy="608" r="4"  fill="#E91E8C" opacity="0.30"/>
+  <circle cx="524" cy="608" r="4"  fill="#E91E8C" opacity="0.30"/>
+
+  <!-- ⑦ Tiny heart at the waist center — the "made with love" detail -->
+  <path transform="translate(496,494) scale(2.6)"
+        d="M8,15 C3,11 0,8 0,5 C0,2.5 1.8,1 4,1
+           C5.5,1 6.8,1.8 8,3 C9.2,1.8 10.5,1 12,1
+           C14.2,1 16,2.5 16,5 C16,8 13,11 8,15Z"
+        fill="#C2185B" opacity="0.55"/>
+</svg>
