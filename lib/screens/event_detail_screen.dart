@@ -13,7 +13,9 @@ import '../data/pregnancy_data.dart';
 import '../models/event.dart';
 import '../l10n/app_l10n.dart';
 import '../providers/locale_provider.dart';
+import '../services/moon_phase_service.dart';
 import '../widgets/countdown_display.dart';
+import '../widgets/zodiac_card.dart';
 import '../widgets/photo_gallery.dart';
 import '../widgets/pregnancy_animation.dart';
 import '../widgets/week_info_card.dart';
@@ -44,7 +46,10 @@ class EventDetailScreen extends ConsumerWidget {
               )).value ?? const SizedBox.shrink(),
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () => context.push('/events/$eventId/edit'),
+            onPressed: () async {
+              await context.push('/events/$eventId/edit');
+              ref.invalidate(_eventDetailProvider(eventId));
+            },
           ),
         ],
       ),
@@ -116,6 +121,16 @@ class _DetailContent extends ConsumerWidget {
           if (isPregnancy && weekInfo != null)
             WeekInfoCard(weekInfo: weekInfo, week: currentWeek!),
           const SizedBox(height: 20),
+          _MoonPhaseCard(event: event),
+          const SizedBox(height: 20),
+          if (event.type == EventType.pregnancy || event.type == EventType.birthday) ...[
+            ZodiacCard(
+              date: event.targetDate,
+              title: event.type == EventType.pregnancy ? l.zodiacTitle : l.zodiacTitleBirthday,
+              showChinese: event.type == EventType.pregnancy,
+            ),
+            const SizedBox(height: 20),
+          ],
           if (event.id != null) PhotoGallery(eventId: event.id!),
         ],
       ),
@@ -196,6 +211,69 @@ class _ShareSheetState extends ConsumerState<_ShareSheet> {
     }
   }
 }
+
+// ─── Moon phase card ─────────────────────────────────────────────────────────
+
+class _MoonPhaseCard extends ConsumerWidget {
+  const _MoonPhaseCard({required this.event});
+  final Event event;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = ref.watch(l10nProvider);
+    final todayPhase = MoonPhaseService.getPhase(DateTime.now());
+    final isPregnancy = event.type == EventType.pregnancy;
+    final birthPhase = isPregnancy ? MoonPhaseService.getPhase(event.targetDate) : null;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _MoonRow(label: l.moonToday, phase: todayPhase, locale: l.locale),
+            if (birthPhase != null) ...[
+              const Divider(height: 24),
+              _MoonRow(label: l.moonBirth, phase: birthPhase, locale: l.locale),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MoonRow extends StatelessWidget {
+  const _MoonRow({required this.label, required this.phase, required this.locale});
+  final String label;
+  final MoonPhase phase;
+  final String locale;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(phase.emoji, style: const TextStyle(fontSize: 40)),
+        const SizedBox(width: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+            ),
+            Text(
+              phase.nameFor(locale),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Share card ───────────────────────────────────────────────────────────────
 
 class _ShareCard extends StatelessWidget {
   const _ShareCard({required this.event, required this.l});
