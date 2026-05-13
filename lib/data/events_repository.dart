@@ -8,7 +8,9 @@ final eventsRepositoryProvider = Provider<EventsRepository>((ref) {
 
 final eventsProvider = FutureProvider<List<Event>>((ref) async {
   final repo = ref.watch(eventsRepositoryProvider);
-  return repo.getAll();
+  final events = await repo.getAll();
+  events.sort((a, b) => a.daysRemaining.compareTo(b.daysRemaining));
+  return events;
 });
 
 class EventsRepository {

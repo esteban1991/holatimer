@@ -57,7 +57,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: eventsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
-        data: (events) {
+        data: (allEvents) {
+          final events = allEvents.where((e) => e.daysRemaining >= 0).toList();
           if (events.isEmpty) return _EmptyState(l: l);
           final multiple = events.length > 1;
           return Stack(
@@ -69,7 +70,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     : const NeverScrollableScrollPhysics(),
                 itemCount: events.length,
                 onPageChanged: (i) => setState(() => _currentPage = i),
-                itemBuilder: (_, i) => _HomeContent(event: events[i]),
+                itemBuilder: (_, i) => GestureDetector(
+                  onTap: () => context.push('/events/${events[i].id}'),
+                  child: _HomeContent(event: events[i]),
+                ),
               ),
               if (multiple)
                 Positioned(
@@ -148,13 +152,23 @@ class _HomeContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 8),
-          Text(
-            event.name,
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: AppTheme.pinkDark,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Text(
+                  event.name,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: AppTheme.colorsFor(event.type).dark,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Icon(Icons.chevron_right, color: AppTheme.colorsFor(event.type).primary, size: 22),
+            ],
           ),
           const SizedBox(height: 24),
           if (isPregnancy && weekInfo != null) ...[

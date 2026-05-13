@@ -23,14 +23,23 @@ class EventsScreen extends ConsumerWidget {
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (events) {
           if (events.isEmpty) {
-            return Center(
-              child: Text(l.noEventsYet, textAlign: TextAlign.center),
-            );
+            return Center(child: Text(l.noEventsYet, textAlign: TextAlign.center));
           }
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: events.length,
-            itemBuilder: (ctx, i) => _EventTile(event: events[i], ref: ref, l: l),
+          final upcoming = events.where((e) => e.daysRemaining >= 0).toList();
+          // Most recently passed first (least negative daysRemaining = closest to today)
+          final past = events.where((e) => e.daysRemaining < 0).toList().reversed.toList();
+          return ListView(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, MediaQuery.of(context).padding.bottom + 80),
+            children: [
+              if (upcoming.isNotEmpty) ...[
+                if (past.isNotEmpty) _SectionHeader(l.upcomingEvents),
+                ...upcoming.map((e) => _EventTile(event: e, ref: ref, l: l)),
+              ],
+              if (past.isNotEmpty) ...[
+                _SectionHeader(l.pastEvents),
+                ...past.map((e) => _EventTile(event: e, ref: ref, l: l, isPast: true)),
+              ],
+            ],
           );
         },
       ),
@@ -43,11 +52,32 @@ class EventsScreen extends ConsumerWidget {
   }
 }
 
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader(this.label);
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 8, 4, 6),
+      child: Text(
+        label.toUpperCase(),
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          color: Colors.grey[500],
+          letterSpacing: 1.2,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
 class _EventTile extends StatelessWidget {
-  const _EventTile({required this.event, required this.ref, required this.l});
+  const _EventTile({required this.event, required this.ref, required this.l, this.isPast = false});
   final Event event;
   final WidgetRef ref;
   final AppL10n l;
+  final bool isPast;
 
   String get _typeEmoji => switch (event.type) {
     EventType.pregnancy => '🤰',
@@ -68,24 +98,26 @@ class _EventTile extends StatelessWidget {
         leading: Text(_typeEmoji, style: const TextStyle(fontSize: 32)),
         title: Text(event.name, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(dateStr),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              '${days.abs()}',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: days >= 0 ? AppTheme.colorsFor(event.type).primary : Colors.green,
-              ),
+        trailing: isPast
+          ? Icon(Icons.check_circle_outline, color: Colors.grey[400])
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '${days.abs()}',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.colorsFor(event.type).primary,
+                  ),
+                ),
+                Text(
+                  l.dayUnit(days.abs()),
+                  style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                ),
+              ],
             ),
-            Text(
-              l.dayUnit(days.abs()),
-              style: TextStyle(fontSize: 11, color: Colors.grey[600]),
-            ),
-          ],
-        ),
         onTap: () => context.push('/events/${event.id}'),
         onLongPress: () => _showOptions(context),
       ),

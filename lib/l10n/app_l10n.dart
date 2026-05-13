@@ -82,6 +82,11 @@ class AppL10n {
     required this.madeWithLove,
     required this.noAds,
     required this.shareCaption,
+    required this.upcomingEvents,
+    required this.pastEvents,
+    required this.renewTimer,
+    required this.createBirthdayEvent,
+    required this.updateBirthDate,
     required this.moonToday,
     required this.moonBirth,
     required this.zodiacTitle,
@@ -161,6 +166,11 @@ class AppL10n {
   final String madeWithLove;
   final String noAds;
   final String shareCaption;
+  final String upcomingEvents;
+  final String pastEvents;
+  final String renewTimer;
+  final String createBirthdayEvent;
+  final String updateBirthDate;
   final String moonToday;
   final String moonBirth;
   final String zodiacTitle;
@@ -173,6 +183,8 @@ class AppL10n {
   String monthUnit(int n) => n == 1 ? monthSingular : monthPlural;
   String arrived(String name) => arrivedFmt.replaceAll('{name}', name);
   String daysAgo(int n) => daysAgoFmt.replaceAll('{n}', '$n');
+  String renewForYear(int year) => renewTimer.replaceAll('{year}', '$year');
+
   String notifToday(String name) => notifBodyToday.replaceAll('{name}', name);
   String notifTomorrow(String name) => notifBodyTomorrow.replaceAll('{name}', name);
   String notifDays(int n, String name) =>
@@ -246,6 +258,11 @@ class AppL10n {
       madeWithLove: 'Hecho con ❤️ por Mulder',
       noAds: 'Sin anuncios. Para siempre.',
       shareCaption: 'Contando los días que importan ✨ #HolaTimer',
+      upcomingEvents: 'Próximos',
+      pastEvents: 'Pasados',
+      renewTimer: 'Renovar para {year}',
+      createBirthdayEvent: 'Crear cumpleaños',
+      updateBirthDate: 'Actualizar fecha',
       moonToday: 'Luna de hoy',
       moonBirth: 'Luna del nacimiento',
       zodiacTitle: '✨ Signos del bebé',
@@ -320,6 +337,11 @@ class AppL10n {
       madeWithLove: 'Made with ❤️ by Mulder',
       noAds: 'No ads. Ever.',
       shareCaption: 'Counting the days that matter ✨ #HolaTimer',
+      upcomingEvents: 'Upcoming',
+      pastEvents: 'Past',
+      renewTimer: 'Renew for {year}',
+      createBirthdayEvent: 'Create birthday',
+      updateBirthDate: 'Update date',
       moonToday: "Today's moon",
       moonBirth: 'Birth moon',
       zodiacTitle: "✨ Baby's signs",
@@ -394,6 +416,11 @@ class AppL10n {
       madeWithLove: '❤️ Mulder 作',
       noAds: '広告なし。永遠に。',
       shareCaption: '大切な日をカウント中 ✨ #HolaTimer',
+      upcomingEvents: '今後',
+      pastEvents: '過去',
+      renewTimer: '{year}年に更新',
+      createBirthdayEvent: '誕生日タイマーを作成',
+      updateBirthDate: '日付を更新',
       moonToday: '今日の月',
       moonBirth: '誕生の月',
       zodiacTitle: '✨ 赤ちゃんの星座・干支',
@@ -468,6 +495,11 @@ class AppL10n {
       madeWithLove: '❤️ Mulder 制作',
       noAds: '永无广告。',
       shareCaption: '为重要时刻倒计时中 ✨ #HolaTimer',
+      upcomingEvents: '即将到来',
+      pastEvents: '已过期',
+      renewTimer: '更新到{year}年',
+      createBirthdayEvent: '创建生日计时器',
+      updateBirthDate: '更新日期',
       moonToday: '今天的月相',
       moonBirth: '出生时的月相',
       zodiacTitle: '✨ 宝宝的星座',
@@ -542,6 +574,11 @@ class AppL10n {
       madeWithLove: '❤️ Mulder 제작',
       noAds: '광고 없음. 영원히.',
       shareCaption: '중요한 날을 카운트다운 중 ✨ #HolaTimer',
+      upcomingEvents: '다가오는',
+      pastEvents: '지난 이벤트',
+      renewTimer: '{year}년으로 갱신',
+      createBirthdayEvent: '생일 타이머 만들기',
+      updateBirthDate: '날짜 업데이트',
       moonToday: '오늘의 달',
       moonBirth: '탄생의 달',
       zodiacTitle: '✨ 아기의 별자리',
@@ -616,6 +653,11 @@ class AppL10n {
       madeWithLove: 'Fatto con ❤️ da Mulder',
       noAds: 'Niente pubblicità. Mai.',
       shareCaption: 'Contando i giorni che contano ✨ #HolaTimer',
+      upcomingEvents: 'Prossimi',
+      pastEvents: 'Passati',
+      renewTimer: 'Rinnova per {year}',
+      createBirthdayEvent: 'Crea compleanno',
+      updateBirthDate: 'Aggiorna data',
       moonToday: 'Luna di oggi',
       moonBirth: 'Luna della nascita',
       zodiacTitle: '✨ Segni del bebè',
@@ -690,6 +732,11 @@ class AppL10n {
       madeWithLove: 'Fait avec ❤️ par Mulder',
       noAds: 'Aucune publicité. Jamais.',
       shareCaption: 'En comptant les jours qui comptent ✨ #HolaTimer',
+      upcomingEvents: 'À venir',
+      pastEvents: 'Passés',
+      renewTimer: 'Renouveler pour {year}',
+      createBirthdayEvent: 'Créer anniversaire',
+      updateBirthDate: 'Mettre à jour la date',
       moonToday: "Lune d'aujourd'hui",
       moonBirth: 'Lune de naissance',
       zodiacTitle: '✨ Signes du bébé',
@@ -764,6 +811,11 @@ class AppL10n {
       madeWithLove: 'Gemacht mit ❤️ von Mulder',
       noAds: 'Keine Werbung. Nie.',
       shareCaption: 'Zähle die Tage, die zählen ✨ #HolaTimer',
+      upcomingEvents: 'Bevorstehend',
+      pastEvents: 'Vergangen',
+      renewTimer: 'Erneuern für {year}',
+      createBirthdayEvent: 'Geburtstag erstellen',
+      updateBirthDate: 'Datum aktualisieren',
       moonToday: 'Mond heute',
       moonBirth: 'Geburtsmond',
       zodiacTitle: '✨ Zeichen des Babys',

@@ -10,8 +10,8 @@ import 'package:share_plus/share_plus.dart';
 import '../app_theme.dart';
 import '../data/events_repository.dart';
 import '../data/pregnancy_data.dart';
-import '../models/event.dart';
 import '../l10n/app_l10n.dart';
+import '../models/event.dart';
 import '../providers/locale_provider.dart';
 import '../services/moon_phase_service.dart';
 import '../widgets/countdown_display.dart';
@@ -98,6 +98,16 @@ class _DetailContent extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          if (event.daysRemaining < 0 &&
+              (event.type == EventType.pregnancy ||
+               event.type == EventType.birthday ||
+               event.type == EventType.anniversary))
+            _ArrivalActions(event: event),
+          if (event.daysRemaining < 0 &&
+              (event.type == EventType.pregnancy ||
+               event.type == EventType.birthday ||
+               event.type == EventType.anniversary))
+            const SizedBox(height: 16),
           Text(
             event.name,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -209,6 +219,133 @@ class _ShareSheetState extends ConsumerState<_ShareSheet> {
     } finally {
       if (mounted) setState(() => _sharing = false);
     }
+  }
+}
+
+// ─── Arrival actions card ────────────────────────────────────────────────────
+
+class _ArrivalActions extends ConsumerWidget {
+  const _ArrivalActions({required this.event});
+  final Event event;
+
+  DateTime _nextOccurrence() {
+    final now = DateTime.now();
+    var next = DateTime(now.year, event.targetDate.month, event.targetDate.day);
+    while (!next.isAfter(now)) {
+      next = DateTime(next.year + 1, next.month, next.day);
+    }
+    return next;
+  }
+
+  Future<void> _renew(BuildContext context, WidgetRef ref) async {
+    final repo = ref.read(eventsRepositoryProvider);
+    final next = _nextOccurrence();
+    await repo.update(event.copyWith(targetDate: next));
+    ref.invalidate(eventsProvider);
+    ref.invalidate(_eventDetailProvider(event.id!));
+  }
+
+  Future<void> _createBirthday(BuildContext context, WidgetRef ref, AppL10n l) async {
+    final next = _nextOccurrence();
+    final repo = ref.read(eventsRepositoryProvider);
+    final birthday = Event(
+      name: event.name,
+      targetDate: next,
+      type: EventType.birthday,
+      displayUnit: DisplayUnit.days,
+      createdAt: DateTime.now(),
+      notificationTime: event.notificationTime,
+    );
+    await repo.create(birthday);
+    ref.invalidate(eventsProvider);
+    if (context.mounted) context.pop();
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = ref.watch(l10nProvider);
+    final colors = AppTheme.colorsFor(event.type);
+    final next = _nextOccurrence();
+    final isPregnancy = event.type == EventType.pregnancy;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [colors.primary.withValues(alpha: 0.12), colors.light.withValues(alpha: 0.08)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colors.primary.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(isPregnancy ? '🎉' : '✅', style: const TextStyle(fontSize: 22)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  isPregnancy ? l.arrived(event.name) : l.arrived(event.name),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: colors.dark, fontSize: 15),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (isPregnancy) ...[
+            _ActionButton(
+              label: l.updateBirthDate,
+              icon: Icons.edit_calendar,
+              colors: colors,
+              onTap: () => context.push('/events/${event.id}/edit'),
+            ),
+            const SizedBox(height: 8),
+            _ActionButton(
+              label: l.createBirthdayEvent,
+              icon: Icons.cake,
+              colors: colors,
+              onTap: () => _createBirthday(context, ref, l),
+            ),
+          ] else ...[
+            _ActionButton(
+              label: l.renewForYear(next.year),
+              icon: Icons.refresh,
+              colors: colors,
+              onTap: () => _renew(context, ref),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  const _ActionButton({required this.label, required this.icon, required this.colors, required this.onTap});
+  final String label;
+  final IconData icon;
+  final dynamic colors;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: onTap,
+        icon: Icon(icon, size: 18),
+        label: Text(label),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: colors.dark,
+          side: BorderSide(color: colors.primary.withValues(alpha: 0.5)),
+          alignment: Alignment.centerLeft,
+        ),
+      ),
+    );
   }
 }
 
