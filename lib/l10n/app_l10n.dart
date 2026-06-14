@@ -93,6 +93,9 @@ class AppL10n {
     required this.zodiacTitleBirthday,
     required this.westernZodiac,
     required this.chineseZodiac,
+    required this.tapToSeeBaby,
+    required this.babyShape,
+    required this.thisWeek,
   });
 
   final String allEvents;
@@ -177,6 +180,9 @@ class AppL10n {
   final String zodiacTitleBirthday;
   final String westernZodiac;
   final String chineseZodiac;
+  final String tapToSeeBaby;
+  final String babyShape;
+  final String thisWeek;
 
   String dayUnit(int n) => n == 1 ? daySingular : dayPlural;
   String weekUnit(int n) => n == 1 ? weekSingular : weekPlural;
@@ -269,6 +275,9 @@ class AppL10n {
       zodiacTitleBirthday: '✨ Signo del cumpleañero',
       westernZodiac: 'Horóscopo',
       chineseZodiac: 'Zodiaco oriental',
+      tapToSeeBaby: 'ver bebé',
+      babyShape: 'Forma del bebé',
+      thisWeek: 'Esta semana',
     ),
     AppLanguage.en: AppL10n(
       locale: 'en',
@@ -348,6 +357,9 @@ class AppL10n {
       zodiacTitleBirthday: "✨ Birthday sign",
       westernZodiac: 'Horoscope',
       chineseZodiac: 'Eastern zodiac',
+      tapToSeeBaby: 'see baby',
+      babyShape: 'Baby shape',
+      thisWeek: 'This week',
     ),
     AppLanguage.ja: AppL10n(
       locale: 'ja',
@@ -427,6 +439,9 @@ class AppL10n {
       zodiacTitleBirthday: '✨ 誕生日の星座・干支',
       westernZodiac: '星座',
       chineseZodiac: '干支',
+      tapToSeeBaby: '赤ちゃんを見る',
+      babyShape: '赤ちゃんの形',
+      thisWeek: '今週',
     ),
     AppLanguage.zh: AppL10n(
       locale: 'zh',
@@ -506,6 +521,9 @@ class AppL10n {
       zodiacTitleBirthday: '✨ 寿星的星座',
       westernZodiac: '星座',
       chineseZodiac: '生肖',
+      tapToSeeBaby: '宝宝形态',
+      babyShape: '宝宝的形态',
+      thisWeek: '本周',
     ),
     AppLanguage.ko: AppL10n(
       locale: 'ko',
@@ -585,6 +603,9 @@ class AppL10n {
       zodiacTitleBirthday: '✨ 생일자의 별자리',
       westernZodiac: '별자리',
       chineseZodiac: '띠',
+      tapToSeeBaby: '아기 보기',
+      babyShape: '아기 형태',
+      thisWeek: '이번 주',
     ),
     AppLanguage.it: AppL10n(
       locale: 'it',
@@ -664,6 +685,9 @@ class AppL10n {
       zodiacTitleBirthday: '✨ Segno del festeggiato',
       westernZodiac: 'Oroscopo',
       chineseZodiac: 'Zodiaco orientale',
+      tapToSeeBaby: 'vedi bimbo',
+      babyShape: 'Forma del bambino',
+      thisWeek: 'Questa settimana',
     ),
     AppLanguage.fr: AppL10n(
       locale: 'fr',
@@ -743,6 +767,9 @@ class AppL10n {
       zodiacTitleBirthday: "✨ Signe de l'anniversaire",
       westernZodiac: 'Horoscope',
       chineseZodiac: 'Zodiaque oriental',
+      tapToSeeBaby: 'voir bébé',
+      babyShape: 'Forme du bébé',
+      thisWeek: 'Cette semaine',
     ),
     AppLanguage.de: AppL10n(
       locale: 'de',
@@ -822,6 +849,9 @@ class AppL10n {
       zodiacTitleBirthday: '✨ Zeichen des Geburtstagskinds',
       westernZodiac: 'Horoskop',
       chineseZodiac: 'Östliches Tierkreiszeichen',
+      tapToSeeBaby: 'Baby sehen',
+      babyShape: 'Babyform',
+      thisWeek: 'Diese Woche',
     ),
   };
 

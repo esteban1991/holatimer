@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../app_theme.dart';
@@ -13,61 +14,112 @@ class WeekInfoCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = ref.watch(l10nProvider);
 
-    // Japanese week label: 第X週
-    final weekStr = l.locale == 'ja' ? '${l.weekLabel}$week週' : '${l.weekLabel} $week';
+    final weekStr = l.locale == 'ja' || l.locale == 'zh' || l.locale == 'ko'
+        ? '${l.weekLabel}$week週'
+        : '${l.weekLabel} $week';
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(22),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.6),
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(
+              color: AppTheme.pinkLight.withValues(alpha: 0.7),
+              width: 1.5,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.child_care, color: AppTheme.pink),
-                const SizedBox(width: 8),
-                Expanded(
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppTheme.pink.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(Icons.child_care_rounded, color: AppTheme.pink, size: 20),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        '$weekStr — ${weekInfo.fruitFor(l.locale)}',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: AppTheme.pinkDark,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    _Chip(icon: '📏', label: weekInfo.size),
+                    const SizedBox(width: 10),
+                    _Chip(icon: '⚖️', label: weekInfo.weight),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: AppTheme.pinkLighter.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                   child: Text(
-                    '$weekStr — ${weekInfo.fruitFor(l.locale)}',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: AppTheme.pinkDark,
-                      fontWeight: FontWeight.bold,
+                    weekInfo.developmentFor(l.locale),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      height: 1.6,
+                      color: Colors.black87,
                     ),
                   ),
                 ),
               ],
             ),
-            const Divider(height: 20),
-            _Row(icon: '📏', label: l.sizeLabel, value: weekInfo.size),
-            const SizedBox(height: 8),
-            _Row(icon: '⚖️', label: l.weightLabel, value: weekInfo.weight),
-            const SizedBox(height: 12),
-            Text(
-              weekInfo.developmentFor(l.locale),
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _Row extends StatelessWidget {
-  const _Row({required this.icon, required this.label, required this.value});
+class _Chip extends StatelessWidget {
+  const _Chip({required this.icon, required this.label});
   final String icon;
   final String label;
-  final String value;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(icon, style: const TextStyle(fontSize: 18)),
-        const SizedBox(width: 8),
-        Text('$label: ', style: const TextStyle(fontWeight: FontWeight.w600)),
-        Text(value),
-      ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      decoration: BoxDecoration(
+        color: AppTheme.pink.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.pinkLight.withValues(alpha: 0.5), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(icon, style: const TextStyle(fontSize: 14)),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 13,
+              color: AppTheme.pinkDark,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
