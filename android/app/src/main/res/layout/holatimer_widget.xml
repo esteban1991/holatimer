@@ -3,7 +3,7 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/widget_bg"
+    android:background="@drawable/widget_bg_pregnancy"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="14dp">
@@ -17,8 +17,17 @@
         android:gravity="center"
         android:maxLines="1"
         android:text="HolaTimer"
-        android:textColor="#DDFFFFFF"
-        android:textSize="12sp" />
+        android:textColor="#CCFFFFFF"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/widget_emoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:text="⏳"
+        android:textSize="26sp" />
 
     <TextView
         android:id="@+id/widget_count"
@@ -28,7 +37,7 @@
         android:lineSpacingMultiplier="0.85"
         android:text="—"
         android:textColor="#FFFFFF"
-        android:textSize="54sp" />
+        android:textSize="52sp" />
 
     <TextView
         android:id="@+id/widget_unit"
@@ -37,7 +46,7 @@
         android:fontFamily="sans-serif"
         android:text=""
         android:textColor="#FFB3D9"
-        android:textSize="14sp" />
+        android:textSize="13sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,7 +54,7 @@
         android:layout_marginTop="6dp"
         android:fontFamily="sans-serif"
         android:text="⏳ HolaTimer"
-        android:textColor="#88FFFFFF"
+        android:textColor="#66FFFFFF"
         android:textSize="9sp" />
 
 </LinearLayout>
